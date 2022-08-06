@@ -1,21 +1,38 @@
 import React from "react";
-import './Netflix.css'
 import {NetflixAppBar} from "./NetflixAppBar";
 import {NetflixFooter} from "./NetflixFooter";
 import {NetflixRow} from "./NetflixRow";
+import {getRandomId, getRandomType} from "../utils/helper";
+import {imagePathOriginal, TYPE_MOVIE} from "../config";
+import {clientApi} from "../utils/clientApi";
+import './Netflix.css';
 
-const NetflixHeader = () => {
+const NetflixHeader = ({movie, type = TYPE_MOVIE}) => {
+    const title = type === TYPE_MOVIE ? movie?.title : movie?.name
+    const imageUrl = `${imagePathOriginal}${movie?.backdrop_path}`
+    const banner = {
+        backgroundImage: `url('${imageUrl}')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center center',
+        color: 'white',
+        objectFit: 'contain',
+        height: '448px'
+    }
+
+    if (!movie) {
+        return <></>
+    }
+
     return (
-        <header className="banner">
+        <header style={banner}>
             <div className="banner__contents">
-                <h1 className="banner__title">La casa de papel</h1>
+                <h1 className="banner__title">{title ?? '...'}</h1>
                 <div className="banner__buttons">
                     <button className="banner__button banner__buttonplay">Lecture</button>
                     <button className="banner__button banner__buttonInfo">Ajouter à ma liste</button>
                 </div>
                 <h1 className="synopsis">
-                    Le Professeur recrute une jeune brauqeuse et sept autres criminels en vue d'un cambriolage
-                    grandiose ciblant la Maison royale de la Monnaie d'Espagne
+                    {movie?.overview ?? '...'}
                 </h1>
             </div>
         </header>
@@ -23,13 +40,24 @@ const NetflixHeader = () => {
 }
 
 const NetflixApp = () => {
+    const [headerMovie, setHeaderMovie] = React.useState();
+    const [type] = React.useState(getRandomType())
+
+    const defaultMovieId = getRandomId(type)
+
+    React.useEffect(() => {
+        clientApi(`${type}/${defaultMovieId}`)
+            .then(response => setHeaderMovie(response))
+            .catch(error => console.error(error))
+    }, [])
+
     return (
         <div>
-            <NetflixAppBar />
-            <NetflixHeader />
-            <NetflixRow wideImage={false} title="Films Netflix" />
-            <NetflixRow wideImage={true} title="Séries Netflix" />
-            <NetflixFooter />
+            <NetflixAppBar/>
+            <NetflixHeader movie={headerMovie?.data} type={type}/>
+            <NetflixRow wideImage={false} title="Films Netflix"/>
+            <NetflixRow wideImage={true} title="Séries Netflix"/>
+            <NetflixFooter/>
         </div>
     )
 }
