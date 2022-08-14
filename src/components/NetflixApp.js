@@ -2,54 +2,39 @@ import React from "react";
 import {NetflixAppBar} from "./NetflixAppBar";
 import {NetflixFooter} from "./NetflixFooter";
 import {NetflixRow} from "./NetflixRow";
+import {NetflixHeader} from "./NetflixHeader";
 import {getRandomId, getRandomType} from "../utils/helper";
-import {imagePathOriginal, TYPE_MOVIE} from "../config";
 import {clientApi} from "../utils/clientApi";
+import {makeStyles} from "@mui/styles";
+import {Alert, AlertTitle} from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import './Netflix.css';
+import {useFetchData} from "../utils/hooks";
 
-const NetflixHeader = ({movie, type = TYPE_MOVIE}) => {
-    const title = type === TYPE_MOVIE ? movie?.title : movie?.name
-    const imageUrl = `${imagePathOriginal}${movie?.backdrop_path}`
-    const banner = {
-        backgroundImage: `url('${imageUrl}')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center center',
-        color: 'white',
-        objectFit: 'contain',
-        height: '448px'
+const useStyles = makeStyles(theme => ({
+    alert: {
+        width: '50%',
+        margin: 'auto',
+        marginBottom: '50px'
+    },
+    progress: {
+        marginLeft: '30px'
     }
-
-    if (!movie) {
-        return <></>
-    }
-
-    return (
-        <header style={banner}>
-            <div className="banner__contents">
-                <h1 className="banner__title">{title ?? '...'}</h1>
-                <div className="banner__buttons">
-                    <button className="banner__button banner__buttonplay">Lecture</button>
-                    <button className="banner__button banner__buttonInfo">Ajouter à ma liste</button>
-                </div>
-                <h1 className="synopsis">
-                    {movie?.overview ?? '...'}
-                </h1>
-            </div>
-        </header>
-    )
-}
+}))
 
 const NetflixApp = () => {
-    const [headerMovie, setHeaderMovie] = React.useState();
+    const {data: headerMovie, error, status, execute} = useFetchData()
     const [type] = React.useState(getRandomType())
-
-    const defaultMovieId = getRandomId(type)
+    const classes = useStyles();
+    const defaultMovieId = getRandomId(type);
 
     React.useEffect(() => {
-        clientApi(`${type}/${defaultMovieId}`)
-            .then(response => setHeaderMovie(response))
-            .catch(error => console.error(error))
+        execute(clientApi(`${type}/${defaultMovieId}`))
     }, [])
+
+    if (status === 'error') {
+        throw new Error(error.message)
+    }
 
     return (
         <div>
@@ -57,6 +42,19 @@ const NetflixApp = () => {
             <NetflixHeader movie={headerMovie?.data} type={type}/>
             <NetflixRow wideImage={false} title="Films Netflix"/>
             <NetflixRow wideImage={true} title="Séries Netflix"/>
+            {/*{status === 'error' ? (*/}
+            {/*    <div className={classes.alert}>*/}
+            {/*        <Alert severity="error">*/}
+            {/*            <AlertTitle>Une erreur est survenue</AlertTitle>*/}
+            {/*            Détail : {error.message}*/}
+            {/*        </Alert>*/}
+            {/*    </div>*/}
+            {/*) : null}*/}
+            {status === 'fetching' ? (
+                <div className={classes.progress}>
+                    <CircularProgress color="primary" />
+                </div>
+            ) : null}
             <NetflixFooter/>
         </div>
     )
