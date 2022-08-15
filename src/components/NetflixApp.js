@@ -8,8 +8,9 @@ import {clientApi} from "../utils/clientApi";
 import {makeStyles} from "@mui/styles";
 import {Alert, AlertTitle} from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-import './Netflix.css';
 import {useFetchData} from "../utils/hooks";
+import './Netflix.css';
+import {TYPE_MOVIE, TYPE_TV} from "../config";
 
 const useStyles = makeStyles(theme => ({
     alert: {
@@ -40,8 +41,11 @@ const NetflixApp = () => {
         <div>
             <NetflixAppBar/>
             <NetflixHeader movie={headerMovie?.data} type={type}/>
-            <NetflixRow wideImage={false} title="Films Netflix"/>
-            <NetflixRow wideImage={true} title="Séries Netflix"/>
+            <NetflixRow wideImage={true} watermark={true} title="Films Netflix" type={TYPE_MOVIE} filter="trending"/>
+            <NetflixRow wideImage={false} watermark={true} title="Séries Netflix" type={TYPE_TV} filter="trending"/>
+            <NetflixRow wideImage={true} watermark={true} title="Les mieux notés" type={TYPE_MOVIE} filter="top_rated"/>
+            <NetflixRow wideImage={true} watermark={true} title="Action & Aventure" type={TYPE_TV} filter="genres" param="10759"/>
+            <NetflixRow wideImage={false} watermark={false} title="Les documentaires" type={TYPE_MOVIE} filter="genres" param="99"/>
             {/*{status === 'error' ? (*/}
             {/*    <div className={classes.alert}>*/}
             {/*        <Alert severity="error">*/}
