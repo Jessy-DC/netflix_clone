@@ -1,4 +1,5 @@
 import {imagePathOriginal, TYPE_MOVIE} from "../config";
+import {HeaderSkeleton} from "./skeletons/HeaderSkeleton";
 import React from "react";
 
 const NetflixHeader = ({movie, type = TYPE_MOVIE}) => {
@@ -14,7 +15,7 @@ const NetflixHeader = ({movie, type = TYPE_MOVIE}) => {
     }
 
     if (!movie) {
-        return <></>
+        return <HeaderSkeleton />
     }
 
     return (

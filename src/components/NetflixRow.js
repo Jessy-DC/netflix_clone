@@ -3,6 +3,7 @@ import {clientApi} from "../utils/clientApi";
 import {Alert, AlertTitle} from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import {useFetchData} from "../utils/hooks";
+import {RowSkeleton} from "./skeletons/RowSkeleton";
 import {imagePathOriginal, TYPE_MOVIE} from "../config";
 
 const NetflixRow = ({title = '', wideImage = true, type = TYPE_MOVIE, param,
@@ -49,12 +50,7 @@ const NetflixRow = ({title = '', wideImage = true, type = TYPE_MOVIE, param,
 
     if (status === 'fetching' || status === 'idle') {
         return (
-            <div className="row">
-                <h2>{title}</h2>
-                <div className="row__posters">
-                    <CircularProgress />
-                </div>
-            </div>
+            <RowSkeleton title={title} wideImage={wideImage} />
         )
     }
 
