@@ -1,15 +1,15 @@
 import React from "react";
+import {NetflixAppBar} from "./NetflixAppBar";
 import {NetflixFooter} from "./NetflixFooter";
 import {NetflixRow} from "./NetflixRow";
 import {NetflixHeader} from "./NetflixHeader";
-import {NetflixAppBar} from "./NetflixAppBar";
-import {getRandomId, getRandomType} from "../utils/helper";
 import {clientApi} from "../utils/clientApi";
 import {makeStyles} from "@mui/styles";
 import CircularProgress from "@mui/material/CircularProgress";
 import {useFetchData} from "../utils/hooks";
 import './Netflix.css';
 import {TYPE_MOVIE, TYPE_TV} from "../config";
+import {useLocation, useParams} from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
     alert: {
@@ -22,15 +22,29 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const NetflixApp = () => {
+const NetflixById = () => {
     const {data: headerMovie, error, status, execute} = useFetchData()
-    const [type] = React.useState(getRandomType())
+    const {tvId, movieId} = useParams();
+    const location = useLocation();
+    const [type, setType] = React.useState(
+        location.pathname.includes(TYPE_TV) ? TYPE_TV : TYPE_MOVIE
+    )
     const classes = useStyles();
-    const defaultMovieId = getRandomId(type);
+    const [id, setId] = React.useState(type === TYPE_TV ? tvId : movieId)
 
     React.useEffect(() => {
-        execute(clientApi(`${type}/${defaultMovieId}`))
-    }, [])
+        execute(clientApi(`${type}/${id}`))
+    }, [execute, type, id])
+
+    React.useEffect(() => {
+        const type = location.pathname.includes(TYPE_TV) ? TYPE_TV : TYPE_MOVIE;
+        setType(type);
+        setId(type === TYPE_TV ? tvId : movieId)
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        })
+    }, [location.pathname, movieId, tvId])
 
     if (status === 'error') {
         throw new Error(error.message)
@@ -56,4 +70,4 @@ const NetflixApp = () => {
     )
 }
 
-export default NetflixApp;
+export {NetflixById};

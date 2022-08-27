@@ -2,6 +2,7 @@ import React from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import {Link} from 'react-router-dom'
 
 const NetflixAppBar = () => {
     const [appBarStyle, setAppBarStyle] = React.useState({
@@ -37,31 +38,31 @@ const NetflixAppBar = () => {
         <AppBar style={appBarStyle}>
             <Toolbar>
                 <img src="images/netflix-logo.png" alt="" height="20" />
-                <a href="/">
+                <Link to="/">
                     <Typography variant="h6" style={margin10}>
                         Accueil
                     </Typography>
-                </a>
-                <a href="/series">
+                </Link>
+                <Link to="/series">
                     <Typography variant="h6" style={margin10}>
                         Séries
                     </Typography>
-                </a>
-                <a href="/movies">
+                </Link>
+                <Link to="/movies">
                     <Typography variant="h6" style={margin10}>
                         Films
                     </Typography>
-                </a>
-                <a href="/news">
+                </Link>
+                <Link to="/news">
                     <Typography variant="h6" style={margin10}>
                         Nouveautés
                     </Typography>
-                </a>
-                <a href="/list">
+                </Link>
+                <Link to="/list">
                     <Typography variant="h6" style={margin10}>
                         Ma liste
                     </Typography>
-                </a>
+                </Link>
                 <img src="images/netflix-avatar.png" style={marginLeft} alt="" height="20" />
             </Toolbar>
         </AppBar>

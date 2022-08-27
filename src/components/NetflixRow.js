@@ -1,10 +1,10 @@
 import React from "react";
 import {clientApi} from "../utils/clientApi";
 import {Alert, AlertTitle} from "@mui/material";
-import CircularProgress from "@mui/material/CircularProgress";
 import {useFetchData} from "../utils/hooks";
 import {RowSkeleton} from "./skeletons/RowSkeleton";
 import {imagePathOriginal, TYPE_MOVIE} from "../config";
+import {Link} from 'react-router-dom';
 
 const NetflixRow = ({title = '', wideImage = true, type = TYPE_MOVIE, param,
                         filter = 'popular', watermark = false}) => {
@@ -69,9 +69,11 @@ const NetflixRow = ({title = '', wideImage = true, type = TYPE_MOVIE, param,
             <div className="row__posters">
                 {data.data.results.map((media) => {
                     return (
-                        <div key={media.id} className={`row__poster row__posterLarge ${watermarkClass}`}>
-                            <img src={buildImagePath(media)} alt={media.name} />
-                        </div>
+                        <Link to={`/${type}/${media.id}`}>
+                            <div key={media.id} className={`row__poster row__posterLarge ${watermarkClass}`}>
+                                <img src={buildImagePath(media)} alt={media.name} />
+                            </div>
+                        </Link>
                     )
                 })}
             </div>

@@ -1,8 +1,14 @@
 import NetflixApp from "./components/NetflixApp";
+import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
+import {NetflixMovies} from "./components/NetflixMovies";
+import NetflixSeries from "./components/NetflixSeries";
+import {NetflixNews} from "./components/NetflixNews";
+import {NetflixById} from "./components/NetflixById";
 import {ThemeProvider} from '@mui/styles'
 import {createTheme} from "@mui/material/styles";
 import {ErrorBoundary} from "react-error-boundary";
 import {NetflixAppBar} from "./components/NetflixAppBar";
+import {Error404} from "./components/Error404";
 
 function ErrorFallback({error, resetErrorBoundary}) {
     return (
@@ -46,11 +52,22 @@ const theme = createTheme({
 
 function App() {
     return (
-        <ThemeProvider theme={theme}>
-            <ErrorBoundary FallbackComponent={ErrorFallback} onReset={() => {}}>
-                <NetflixApp/>
-            </ErrorBoundary>
-        </ThemeProvider>
+        <Router>
+            <ThemeProvider theme={theme}>
+                <ErrorBoundary FallbackComponent={ErrorFallback} onReset={() => {
+                }}>
+                    <Routes>
+                        <Route path="/" element={<NetflixApp/>}/>
+                        <Route path="/tv/:tvId" element={<NetflixById/>}/>
+                        <Route path="/movie/:movieId" element={<NetflixById/>}/>
+                        <Route path="/movies" element={<NetflixMovies/>}/>
+                        <Route path="/series" element={<NetflixSeries/>}/>
+                        <Route path="/news" element={<NetflixNews/>}/>
+                        <Route path="*" element={<Error404/>}/>
+                    </Routes>
+                </ErrorBoundary>
+            </ThemeProvider>
+        </Router>
     )
 }
 
