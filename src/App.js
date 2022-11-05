@@ -1,74 +1,40 @@
-import NetflixApp from "./components/NetflixApp";
-import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
-import {NetflixMovies} from "./components/NetflixMovies";
-import NetflixSeries from "./components/NetflixSeries";
-import {NetflixNews} from "./components/NetflixNews";
-import {NetflixById} from "./components/NetflixById";
-import {ThemeProvider} from '@mui/styles'
-import {createTheme} from "@mui/material/styles";
-import {ErrorBoundary} from "react-error-boundary";
-import {NetflixAppBar} from "./components/NetflixAppBar";
-import {Error404} from "./components/Error404";
-
-function ErrorFallback({error, resetErrorBoundary}) {
-    return (
-        <div>
-            <NetflixAppBar/>
-            <div
-                role="alert"
-                style={{
-                    height: '100%',
-                    textAlign: 'center',
-                    margin: '100px 300px',
-                    color: '#fff',
-                }}
-            >
-                <h1 style={{fontSize: '2.5em'}}>Vous cherchez votre chemin ?</h1>
-                <pre style={{color: 'red', fontSize: '1em'}}>
-                  Erreur : {error.message}
-                </pre>
-
-                <div className="banner__buttons">
-                    <button className="banner__button banner__buttonplay">
-                        Accueil
-                    </button>
-                </div>
-            </div>
-        </div>
-    )
-}
+import * as React from 'react'
+import './mocks'
+import * as authNetflix from './utils/authNetflixProvider'
+import {createTheme, ThemeProvider} from '@mui/material/styles'
+import {AuthApp} from './AuthApp'
+import {UnauthApp} from './UnauthApp'
 
 const theme = createTheme({
     palette: {
-        type: 'dark',
+        mode: 'dark',
         primary: {
-            main: '#111'
+            main: '#E50914',
         },
         secondary: {
-            main: '#000'
-        }
-    }
+            main: '#E50914',
+        },
+    },
 })
 
 function App() {
+    const [authUser, setAuthUser] = React.useState(null)
+    const login = data => authNetflix.login(data).then(user => setAuthUser(user))
+    const register = data =>
+        authNetflix.register(data).then(user => setAuthUser(user))
+    const logout = () => {
+        authNetflix.logout()
+        setAuthUser(null)
+    }
     return (
-        <Router>
-            <ThemeProvider theme={theme}>
-                <ErrorBoundary FallbackComponent={ErrorFallback} onReset={() => {
-                }}>
-                    <Routes>
-                        <Route path="/" element={<NetflixApp/>}/>
-                        <Route path="/tv/:tvId" element={<NetflixById/>}/>
-                        <Route path="/movie/:movieId" element={<NetflixById/>}/>
-                        <Route path="/movies" element={<NetflixMovies/>}/>
-                        <Route path="/series" element={<NetflixSeries/>}/>
-                        <Route path="/news" element={<NetflixNews/>}/>
-                        <Route path="*" element={<Error404/>}/>
-                    </Routes>
-                </ErrorBoundary>
-            </ThemeProvider>
-        </Router>
+        <ThemeProvider theme={theme}>
+            {authUser ? (
+                <AuthApp logout={logout} />
+            ) : (
+                <UnauthApp login={login} register={register} />
+            )}
+        </ThemeProvider>
     )
 }
 
-export default App;
+export {App}

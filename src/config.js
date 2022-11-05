@@ -6,4 +6,6 @@ export const LANG = 'fr-fr';
 export const imagePath = process.env.REACT_APP_IMAGE_URL
 export const imagePathOriginal = `${imagePath}/original`
 export const imagePath400 = `${imagePath}/w400`
+export const AUTH_URL = process.env.REACT_APP_AUTH_URL
+export const localStorageTokenKey = 'netflix_auth_token'
 
