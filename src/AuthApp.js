@@ -36,7 +36,7 @@ function ErrorFallback({error, resetErrorBoundary}) {
     )
 }
 
-function AuthApp({logout}) {
+function AuthApp({user}) {
     return (
         <Router>
             <ErrorBoundary FallbackComponent={ErrorFallback} onReset={() => {

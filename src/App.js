@@ -1,3 +1,4 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import * as React from 'react'
 import './mocks'
 import * as authNetflix from './utils/authNetflixProvider'
@@ -18,21 +19,17 @@ const theme = createTheme({
 })
 
 function App() {
-    const [authUser, setAuthUser] = React.useState(null)
-    const login = data => authNetflix.login(data).then(user => setAuthUser(user))
-    const register = data =>
-        authNetflix.register(data).then(user => setAuthUser(user))
-    const logout = () => {
-        authNetflix.logout()
-        setAuthUser(null)
+    const { user, isAuthenticated, isLoading } = useAuth0();
+
+    if (isLoading) {
+        return <div>Loading ...</div>;
     }
+
     return (
         <ThemeProvider theme={theme}>
-            {authUser ? (
-                <AuthApp logout={logout} />
-            ) : (
-                <UnauthApp login={login} register={register} />
-            )}
+            isAuthenticated && (
+                <AuthApp user={user}/>
+            )
         </ThemeProvider>
     )
 }

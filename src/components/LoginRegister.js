@@ -1,3 +1,4 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import React from 'react'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
@@ -32,7 +33,8 @@ const FormLogin = ({create = false, login, register, logout}) => {
   const [username, setUsername] = React.useState('')
   const [password, setPassword] = React.useState('')
   const classes = useStyles()
-  const label = create ? 'Inscrivez vous' : 'Connexion'
+  const label = create ? 'Inscrivez vous' : 'Connexion';
+  const { loginWithRedirect } = useAuth0();
 
   return (
       <form className={classes.root} noValidate autoComplete="off">
@@ -55,26 +57,17 @@ const FormLogin = ({create = false, login, register, logout}) => {
         />
         {create ? (
             <>
-              <Button
-                  style={{margin: '20px 0 5px 0'}}
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => register({username, password})}
-              >
-                {label}
-              </Button>
+              <button onClick={() => loginWithRedirect()}>{label}</button>;
               <small>* Consultez nos CGV</small>
               <small>This page is protected by Google reCAPTCHA</small>
             </>
         ) : (
             <>
-              <Button
-                  style={{margin: '20px 0 5px 0'}}
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => login({username, password})}
-              >
-                {label}
+              <Button style={{margin: '20px 0 5px 0'}}
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => loginWithRedirect()}>
+                  {label}
               </Button>
               <div>
                 {' '}
